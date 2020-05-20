@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 
 import api from '../../services/api';
 
-import { Titulo, Form, Output } from './styles';
+import { Titulo, Form, Output, Error } from './styles';
 
 interface Repository {
   bairro: string;
@@ -40,6 +40,7 @@ const Principal: React.FC = () => {
     ): Promise<void> {
       event.preventDefault();
 
+
     console.log('lalala2');
     try {
       const response = await api.get(`/${newRepo}/json`);
@@ -47,14 +48,15 @@ const Principal: React.FC = () => {
       //console.log(response.data);
       const repository = response.data;
 
-      setRepositories([...repositories, repository]);
+      setRepositories([repository]);
+      setInputError('');
       setNewRepo('');
-      console.log(repositories);
-      console.log(repository);
+      console.log(repositories); //guarda todas busca
+      console.log(repository); //guarda ultima busca
 
     } catch (err) {
+      setRepositories([]);
       setInputError('Erro no CEP digitado, favor verificar');
-
     }
 
   }
@@ -73,7 +75,8 @@ return (
       <button type="submit">Buscar</button>
     </Form>
 
-    { inputError && <Output>{inputError}</Output> }
+    { inputError && <Error>{inputError}</Error> }
+
     <Output>
       {repositories.map(repository => (
         <div key={repository.localidade}>

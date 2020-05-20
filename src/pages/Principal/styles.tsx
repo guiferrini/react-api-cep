@@ -30,3 +30,10 @@ export const Output = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const Error = styled.div`
+  display: flex;
+  justify-content: center;
+  color: red;
+
+`;
