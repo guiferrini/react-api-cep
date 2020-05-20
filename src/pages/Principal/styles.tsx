@@ -26,4 +26,7 @@ export const Form = styled.form`
   }
 `;
 
-export const Output = styled.div``;
+export const Output = styled.div`
+  display: flex;
+  justify-content: center;
+`;

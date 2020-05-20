@@ -15,7 +15,7 @@ export default createGlobalStyle`
 
   #root{
     background-color: #E6E6FA;
-    max-width: 500px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 40px 20px;
   }

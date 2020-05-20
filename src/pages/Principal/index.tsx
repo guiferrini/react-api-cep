@@ -4,11 +4,37 @@ import api from '../../services/api';
 
 import { Titulo, Form, Output } from './styles';
 
+interface Repository {
+  bairro: string;
+  cep: number;
+  complemento: string;
+  gia: number;
+  ibge: number;
+  localidade: string;
+  logradouro: string;
+  uf: string;
+  unidade: string;
+}
+
 const Principal: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
-  //const[repositories, setRepositories] = useState('');
   const [inputError, setInputError] = useState('');
+  const [repositories, setRepositories] = useState<Repository[]>(() => {
+    const storageRepositories = localStorage.getItem('@Api_CEP:repositories');
 
+    if (storageRepositories) {
+      return JSON.parse(storageRepositories); // .parse p desfazer .stringify
+    } else {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      '@Api_GitHub:repositories',
+      JSON.stringify(repositories)
+    );
+  }, [repositories]);
 
   async function buscar(event: FormEvent<HTMLFormElement>
     ): Promise<void> {
@@ -18,10 +44,17 @@ const Principal: React.FC = () => {
     try {
       const response = await api.get(`/${newRepo}/json`);
 
-      console.log(response.data);
+      //console.log(response.data);
+      const repository = response.data;
+
+      setRepositories([...repositories, repository]);
+      setNewRepo('');
+      console.log(repositories);
+      console.log(repository);
 
     } catch (err) {
-      console.log('lalala3');
+      setInputError('Erro no CEP digitado, favor verificar');
+
     }
 
   }
@@ -40,11 +73,18 @@ return (
       <button type="submit">Buscar</button>
     </Form>
 
+    { inputError && <Output>{inputError}</Output> }
     <Output>
-      <h1>Logradouro: Praça da Sé</h1>
-      <h2>Bairro: Sé</h2>
-      <h2>Localidade: São Paulo</h2>
-      <h2>UF: SP</h2>
+      {repositories.map(repository => (
+        <div key={repository.localidade}>
+          <h1>Localidade: {repository.localidade}</h1>
+          <h2>Logradouro: {repository.logradouro}</h2>
+          <h2>Bairro: {repository.bairro}</h2>
+          <h2>UF: {repository.uf}</h2>
+        </div>
+
+      )
+      )}
     </Output>
   </>
 );
